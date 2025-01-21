@@ -3,19 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: linear-gradient(135deg, #ffffff 100%, #969696 100%);
+  --foreground: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
+/* Remove or comment out dark mode since we want consistent colors */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+  min-height: 100vh;
+}
+
+/* Add styles for input and textarea */
+input,
+textarea {
+  color: #000000;
 }
