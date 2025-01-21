@@ -3,10 +3,15 @@
 import { useState } from "react";
 import Image from "next/image";
 
+interface Panel {
+  content: string;
+  image: string | null;
+}
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [story, setStory] = useState<string[]>([]);
+  const [story, setStory] = useState<Panel[]>([]);
 
   const handleGenerate = async () => {
     try {
@@ -26,6 +31,7 @@ export default function Home() {
 
       const data = await response.json();
       setStory(data.story);
+      console.log(data.story);
     } catch (error) {
       console.error("Error generating story:", error);
       alert("Failed to generate story. Please try again.");

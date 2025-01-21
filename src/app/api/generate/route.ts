@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import Replicate from "replicate";
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
         {
           role: "system",
           content:
-            "You are a comic story writer. Create a 3-panel story in JSON format. Each panel should have a 'title' and 'content' field. The content should be exactly 2 sentences.",
+            "You are a comic story writer. Create a 3-panel story in JSON format about 'mideaivirtual' who is a black male with an afro. Each panel should have a 'title' and 'content' field. The content should be exactly 2 sentences.",
         },
         {
           role: "user",
@@ -42,29 +43,24 @@ export async function POST(request: Request) {
     // Generate images for each panel
     const panelImages = await Promise.all(
       storyData.panels.map(async (panel) => {
-        const prediction = await replicate.predictions.create({
-          version:
-            "8beff3369e81422112d93b89ca01426147de542cd4684c244b673b105188fe5f", // SDXL version
-          input: {
-            prompt: `${panel.title}: ${panel.content}`,
-            width: 768,
-            height: 512,
-          },
-        });
-
-        // Wait for the prediction to complete
-        let imageResult = await replicate.predictions.get(prediction.id);
-        while (
-          imageResult.status !== "succeeded" &&
-          imageResult.status !== "failed"
-        ) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          imageResult = await replicate.predictions.get(prediction.id);
-        }
-
-        return imageResult.output?.[0] || null;
+        const output = await replicate.run(
+          "sundai-club/mide:592f97c9f3e02bd5d37b6c31de45d21a28ca2c2a097ff04e8a03dc56ffc316b2",
+          {
+            input: {
+              prompt: `${panel.title}: ${panel.content}`,
+              width: 768,
+              height: 512,
+            },
+          }
+        );
+        console.log(output);
+        console.log(String(output[0]));
+        const imgURL = String(output[0]);
+        return imgURL;
       })
     );
+
+    console.log(storyData);
 
     return NextResponse.json({
       story: storyData.panels.map((panel, index) => ({
