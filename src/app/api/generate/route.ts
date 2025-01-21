@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import Replicate from "replicate";
@@ -53,14 +52,10 @@ export async function POST(request: Request) {
             },
           }
         );
-        console.log(output);
-        console.log(String(output[0]));
         const imgURL = String(output[0]);
         return imgURL;
       })
     );
-
-    console.log(storyData);
 
     return NextResponse.json({
       story: storyData.panels.map((panel, index) => ({

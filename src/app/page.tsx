@@ -31,7 +31,6 @@ export default function Home() {
 
       const data = await response.json();
       setStory(data.story);
-      console.log(data.story);
     } catch (error) {
       console.error("Error generating story:", error);
       alert("Failed to generate story. Please try again.");
