@@ -41,27 +41,31 @@ export async function POST(request: Request) {
 
     // Generate images for each panel
     const panelImages = await Promise.all(
-      storyData.panels.map(async (panel) => {
-        const output = await replicate.run(
-          "sundai-club/mide:592f97c9f3e02bd5d37b6c31de45d21a28ca2c2a097ff04e8a03dc56ffc316b2",
-          {
-            input: {
-              prompt: `${panel.title}: ${panel.content}`,
-              width: 768,
-              height: 512,
-            },
-          }
-        );
-        const imgURL = String(output[0]);
-        return imgURL;
-      })
+      storyData.panels.map(
+        async (panel: { title: string; content: string }) => {
+          const output = (await replicate.run(
+            "sundai-club/mide:592f97c9f3e02bd5d37b6c31de45d21a28ca2c2a097ff04e8a03dc56ffc316b2",
+            {
+              input: {
+                prompt: `${panel.title}: ${panel.content}`,
+                width: 768,
+                height: 512,
+              },
+            }
+          )) as string[];
+          const imgURL = String(output[0]);
+          return imgURL;
+        }
+      )
     );
 
     return NextResponse.json({
-      story: storyData.panels.map((panel, index) => ({
-        content: panel.content,
-        image: panelImages[index],
-      })),
+      story: storyData.panels.map(
+        (panel: { title: string; content: string }, index: number) => ({
+          content: panel.content,
+          image: panelImages[index],
+        })
+      ),
       success: true,
     });
   } catch (error) {
